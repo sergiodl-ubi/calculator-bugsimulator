@@ -10,6 +10,13 @@ Sergio De Leon: This fork can switch on and off delays on input to simulate a sl
 - Multiply : Swift multiplication capability for efficient and accurate mathematical operations.
 - Divide : Divide numbers seamlessly with this convenient mobile calculator application.
 
+### Extra Features
+
+- Configurable input delays, to simulate a slow application.
+  - They can be random, configurable for a sequence of operations or toggleable by a Bluetooth pointer.
+- Configurable unresponsive buttons, to simulate a defective touchscreen.
+  - They can be random, configurable for a sequence of operations or toggleable by a Bluetooth pointer.
+
 ## Tech
 Calculator uses a number of open source projects to work properly :
 - [Dart](https://dart.dev/get-dart/) -

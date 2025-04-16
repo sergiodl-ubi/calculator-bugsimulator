@@ -1,6 +1,7 @@
 import 'package:calculator/button_values.dart';
 import 'package:flutter/material.dart';
 import 'package:math_expressions/math_expressions.dart';
+import 'tools/bugger.dart';
 
 class CalculatorScreen extends StatefulWidget {
   const CalculatorScreen({Key? key}) : super(key: key);
@@ -14,7 +15,9 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   String output = '';
   List<String> calculationHistory = [];
 
-  void onButtonClick(String context, BuildContext buildContext) {
+  void onButtonClick(String context, BuildContext buildContext) async {
+    await customDelay();
+
     if (context == "C") {
       input = '';
       output = '';
