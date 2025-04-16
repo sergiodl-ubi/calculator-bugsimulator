@@ -21,9 +21,9 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
     } else if (context == "()") {
       // Toggle between "(" and ")"
       if (input.endsWith("(")) {
-        input = input.substring(0, input.length - 1) + ")";
+        input = "${input.substring(0, input.length - 1)})";
       } else if (input.endsWith(")")) {
-        input = input.substring(0, input.length - 1) + "(";
+        input = "${input.substring(0, input.length - 1)}(";
       } else {
         if (input.isNotEmpty && !RegExp(r'[0-9.]$').hasMatch(input)) {
           input += "(";
@@ -64,7 +64,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
             return;
           }
 
-          Parser p = Parser();
+          GrammarParser p = GrammarParser();
           Expression expression = p.parse(userInput);
           ContextModel cm = ContextModel();
           var finalValue = expression.evaluate(EvaluationType.REAL, cm);
@@ -131,14 +131,14 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Digit Limit Exceeded"),
-          content: Text("You can input numbers with a maximum of 15 digits."),
+          title: const Text("Digit Limit Exceeded"),
+          content: const Text("You can input numbers with a maximum of 15 digits."),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: Text(
+              child: const Text(
                 "OK",
                 style: TextStyle(
                   color: Colors.black, // Set button text color to black
@@ -160,12 +160,10 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   // Inside _CalculatorScreenState class
   String formatNumber(String numberString) {
     // Replace "/" with "÷" and "*" with "×"
-    var formattedNumber =
-        numberString.replaceAll('/', '÷').replaceAll('*', '×');
+    var formattedNumber = numberString.replaceAll('/', '÷').replaceAll('*', '×');
 
     // Check if the number is an integer
-    if (formattedNumber.contains('.') &&
-        double.tryParse(formattedNumber)! % 1 == 0) {
+    if (formattedNumber.contains('.') && double.tryParse(formattedNumber)! % 1 == 0) {
       // Remove decimal part for integers
       formattedNumber = formattedNumber.replaceAll(RegExp(r'\.0$'), '');
     }
@@ -207,20 +205,20 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                       height: 270,
                       alignment: Alignment.bottomRight,
                       padding: const EdgeInsets.all(8.0),
-                      margin: EdgeInsets.all(8.0),
+                      margin: const EdgeInsets.all(8.0),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        color: Color(0XFFF4EAE0),
+                        color: const Color(0XFFF4EAE0),
                       ),
                       child: Column(
                         children: <Widget>[
                           Container(
                             alignment: Alignment.bottomRight,
                             padding: const EdgeInsets.all(8.0),
-                            margin: EdgeInsets.all(8.0),
+                            margin: const EdgeInsets.all(8.0),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
-                              color: Color(0XFFF4EAE0),
+                              color: const Color(0XFFF4EAE0),
                             ),
                             child: Column(
                               children: <Widget>[
@@ -258,7 +256,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                               // Show calculation history
                               showHistoryDialog(context);
                             },
-                            icon: Icon(Icons.history),
+                            icon: const Icon(Icons.history),
                           ),
                           IconButton(
                             onPressed: () {
@@ -267,7 +265,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                                 setState(() {});
                               }
                             },
-                            icon: Icon(Icons.backspace_outlined),
+                            icon: const Icon(Icons.backspace_outlined),
                           ),
                         ],
                       ),
@@ -306,12 +304,12 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
     required Color textColor,
   }) {
     return Container(
-      margin: EdgeInsets.all(8.0),
+      margin: const EdgeInsets.all(8.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(75),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
-            color: Colors.grey.shade300,
+            color: Colors.grey,
             offset: Offset(4, 4),
             blurRadius: 10,
             spreadRadius: 1,
@@ -327,7 +325,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
       child: ElevatedButton(
         onPressed: () => onButtonClick(text, context),
         style: ElevatedButton.styleFrom(
-          primary: color, // Background color
+          foregroundColor: color,
           elevation: 0, // Set elevation to 0 to delete default shadow
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(75),
@@ -353,9 +351,9 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
         return AlertDialog(
           title: Container(
             alignment: Alignment.center,
-            child: Text("Calculation History", style: TextStyle(fontSize: 20)),
+            child: const Text("Calculation History", style: TextStyle(fontSize: 20)),
           ),
-          content: Container(
+          content: SizedBox(
             width: double.maxFinite,
             child: ListView.builder(
               itemCount: calculationHistory.length,
@@ -366,17 +364,15 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
               },
             ),
           ),
-          backgroundColor: Color(0xFFF4F6F0), // Set background color
+          backgroundColor: const Color(0xFFF4F6F0), // Set background color
           actions: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Container(
                   decoration: BoxDecoration(
-                    color: Color(0xFFCB935F)
-                        .withOpacity(0.83), // Set the container color
-                    borderRadius:
-                        BorderRadius.circular(20), // Set border radius
+                    color: const Color(0xFFCB935F).withValues(alpha: 0.83), // Set the container color
+                    borderRadius: BorderRadius.circular(20), // Set border radius
                   ),
                   child: TextButton(
                     onPressed: () {
@@ -387,30 +383,28 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                       Navigator.pop(context);
                     },
                     style: TextButton.styleFrom(
-                      primary: Colors.black, // Set button text color
+                      foregroundColor: Colors.black, // Set button text color
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
+                    child: const Padding(
+                      padding: EdgeInsets.all(8.0),
                       child: Text("Clear History"),
                     ),
                   ),
                 ),
                 Container(
                   decoration: BoxDecoration(
-                    color: Color(0xFFCB935F)
-                        .withOpacity(0.83), // Set the container color
-                    borderRadius:
-                        BorderRadius.circular(20), // Set border radius
+                    color: const Color(0xFFCB935F).withValues(alpha: 0.83), // Set the container color
+                    borderRadius: BorderRadius.circular(20), // Set border radius
                   ),
                   child: TextButton(
                     onPressed: () {
                       Navigator.pop(context);
                     },
                     style: TextButton.styleFrom(
-                      primary: Colors.black, // Set button text color
+                      foregroundColor: Colors.black, // Set button text color
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
+                    child: const Padding(
+                      padding: EdgeInsets.all(8.0),
                       child: Text("Close"),
                     ),
                   ),

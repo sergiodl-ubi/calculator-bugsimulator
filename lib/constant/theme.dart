@@ -2,15 +2,13 @@ import 'package:flutter/material.dart';
 
 class AppTheme {
   static ThemeData darkTheme = ThemeData.dark().copyWith(
-    useMaterial3: true,
-    buttonTheme: ButtonThemeData(),
-    scaffoldBackgroundColor: Color(0x3C2E1F),
+    buttonTheme: const ButtonThemeData(),
+    scaffoldBackgroundColor: const Color(0xFF3C2E1F),
   );
 
   static ThemeData lightTheme = ThemeData.light().copyWith(
-    useMaterial3: true,
-    buttonTheme: ButtonThemeData(),
-    iconButtonTheme: IconButtonThemeData(),
-    scaffoldBackgroundColor: Color(0xFFFAF6F0),
+    buttonTheme: const ButtonThemeData(),
+    iconButtonTheme: const IconButtonThemeData(),
+    scaffoldBackgroundColor: const Color(0xFFFAF6F0),
   );
 }

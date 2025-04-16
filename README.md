@@ -1,6 +1,8 @@
 # Calculator
 > Introducing a versatile mobile calculator app for seamless mathematical operations. From basic arithmetic to advanced functions, effortlessly calculate sums, substractions, multiplies, divisions, percentages, and more. A user-friendly interface ensures quick and accurate computations on the go.
 
+Sergio De Leon: This fork can switch on and off delays on input to simulate a slow response application and unresponsive buttons to simulate a touchscreen with intermittent low sensitivity. These features are for the intention of testing and identifying frustration on UX incidents in a controlled environment.
+
 ## Features
 - Sum : Addition calculation functionality for quick arithmetic operations.
 - Subtract : Perform subtraction with ease for precise numerical results.
