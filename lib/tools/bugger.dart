@@ -4,23 +4,24 @@ import 'package:calculator/tools/logging.dart';
 
 DebugPrintCallback debugPrint = customDebugPrint("Bugger", true);
 
-const enableDelay = true;
+bool enableDelay = true;
+bool enableIgnore = true;
 
 const delayMin = 0.0;
-const delayMax = 3.0;
-const normMean = 2.1;
+const delayMax = 2.5;
+const normMean = 1.0;
 
 // The delay returned is a number from a normal distribution with [normMean] as mean and [normSigma] as standard dev
-// This standard deviation is to get a 3% of chance to get a delay of 0 seconds
+// This standard deviation is to get a 15% of chance to get a delay of 0 seconds
 //
 // These values were calculated as follows:
 // ```python
 // from scipy.stats import norm
-// normMean = 2.1
-// targetChanceAtZero = 0.03
-// normSigma = (0 - normSigma) / norm.ppf(targetChanceAtZero)
+// normMean = 1.0
+// targetChanceAtZero = 0.15
+// normSigma = (0 - normMean) / norm.ppf(targetChanceAtZero)
 // ```
-const normSigma = 1.11655;
+const normSigma = 1.048036;
 NormalRandom normalRandom = NormalRandom(mean: normMean, stdDev: normSigma);
 
 class NormalRandom {
@@ -50,13 +51,46 @@ double getTimeDelay() {
   return sample;
 }
 
-Future<void> customDelay() async {
+Duration randomDuration() {
+  final delay = getTimeDelay();
+  final secs = delay.truncate();
+  final mils = ((delay - secs) * 1000).truncate();
+  return Duration(seconds: secs, milliseconds: mils);
+}
+
+Future<void> randomDelay() async {
   if (!enableDelay) {
     return;
   }
-  var delay = getTimeDelay();
-  var secs = delay.truncate();
-  var mils = ((delay - secs) * 1000).truncate();
-  debugPrint("Delaying execution by: $secs.$mils");
-  await Future.delayed(Duration(seconds: secs, milliseconds: mils));
+  final randDuration = randomDuration();
+  debugPrint("Delaying execution by: $randDuration");
+  await Future.delayed(randDuration);
+}
+
+const boolDistribution = [1, 1, 1, 1, 0, 0, 0, 0, 0, 0]; // 40% of the time, is true
+bool randomIgnore() {
+  if (!enableIgnore) {
+    return false;
+  }
+  final ignore = boolDistribution[Random().nextInt(boolDistribution.length)] == 1;
+  debugPrint("Should ignore button press? $ignore");
+  return ignore;
+}
+
+Future<bool> randomBug() async {
+  if (enableDelay && enableIgnore) {
+    if (Random().nextBool()) {
+      await randomDelay();
+      return false;
+    } else {
+      var ignore = randomIgnore();
+      return ignore;
+    }
+  } else if (!enableDelay && enableIgnore) {
+    return randomIgnore();
+  } else if (enableDelay && !enableIgnore) {
+    await randomDelay();
+    return false;
+  }
+  return false;
 }

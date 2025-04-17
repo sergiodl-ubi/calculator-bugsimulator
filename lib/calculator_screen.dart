@@ -1,7 +1,7 @@
 import 'package:calculator/button_values.dart';
 import 'package:flutter/material.dart';
 import 'package:math_expressions/math_expressions.dart';
-import 'tools/bugger.dart';
+import 'tools/bugger.dart' as bugger;
 
 class CalculatorScreen extends StatefulWidget {
   const CalculatorScreen({Key? key}) : super(key: key);
@@ -16,7 +16,10 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   List<String> calculationHistory = [];
 
   void onButtonClick(String context, BuildContext buildContext) async {
-    await customDelay();
+    final ignoreClick = await bugger.randomBug();
+    if (ignoreClick) {
+      return;
+    }
 
     if (context == "C") {
       input = '';
@@ -262,6 +265,20 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                             icon: const Icon(Icons.history),
                           ),
                           IconButton(
+                              onPressed: () {
+                                bugger.enableDelay = !bugger.enableDelay;
+                                setState(() {});
+                              },
+                              icon: bugger.enableDelay ? const Icon(Icons.timer) : const Icon(Icons.timer_off)),
+                          IconButton(
+                              onPressed: () {
+                                bugger.enableIgnore = !bugger.enableIgnore;
+                                setState(() {});
+                              },
+                              icon: bugger.enableIgnore
+                                  ? const Icon(Icons.sms_failed)
+                                  : const Icon(Icons.sms_failed_outlined)),
+                          IconButton(
                             onPressed: () {
                               if (input.isNotEmpty) {
                                 input = input.substring(0, input.length - 1);
@@ -278,6 +295,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
               ),
             ),
             Padding(
+              // Calculator keyboard area
               padding: const EdgeInsets.all(8.0),
               child: Wrap(
                 children: [
