@@ -199,110 +199,110 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         bottom: false,
-        child: Column(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Expanded(
-              child: SingleChildScrollView(
-                reverse: true,
-                child: Stack(
-                  children: [
-                    Container(
-                      width: 350,
-                      height: 270,
-                      alignment: Alignment.bottomRight,
-                      padding: const EdgeInsets.all(8.0),
-                      margin: const EdgeInsets.all(8.0),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: const Color(0XFFF4EAE0),
-                      ),
-                      child: Column(
-                        children: <Widget>[
-                          Container(
-                            alignment: Alignment.bottomRight,
-                            padding: const EdgeInsets.all(8.0),
-                            margin: const EdgeInsets.all(8.0),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: const Color(0XFFF4EAE0),
-                            ),
-                            child: Column(
-                              children: <Widget>[
-                                Text(
-                                  input,
-                                  style: const TextStyle(
-                                    fontSize: 30,
-                                    fontWeight: FontWeight.normal,
-                                  ),
-                                  textAlign: TextAlign.end,
-                                ),
-                                Text(
-                                  output,
-                                  style: const TextStyle(
-                                    fontSize: 50,
-                                    fontWeight: FontWeight.normal,
-                                  ),
-                                  textAlign: TextAlign.end,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
+            SingleChildScrollView(
+              reverse: true,
+              child: Stack(
+                children: [
+                  Container(
+                    width: 350,
+                    height: 270,
+                    alignment: Alignment.bottomRight,
+                    padding: const EdgeInsets.all(8.0),
+                    margin: const EdgeInsets.all(8.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: const Color(0XFFF4EAE0),
                     ),
-                    Positioned(
-                      bottom: 16,
-                      right: 16,
-                      left: 16,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          IconButton(
-                            onPressed: () {
-                              // Show calculation history
-                              showHistoryDialog(context);
-                            },
-                            icon: const Icon(Icons.history),
+                    child: Column(
+                      children: <Widget>[
+                        Container(
+                          alignment: Alignment.bottomRight,
+                          padding: const EdgeInsets.all(8.0),
+                          margin: const EdgeInsets.all(8.0),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: const Color(0XFFF4EAE0),
                           ),
-                          IconButton(
-                              onPressed: () {
-                                bugger.enableDelay = !bugger.enableDelay;
-                                setState(() {});
-                              },
-                              icon: bugger.enableDelay ? const Icon(Icons.timer) : const Icon(Icons.timer_off)),
-                          IconButton(
-                              onPressed: () {
-                                bugger.enableIgnore = !bugger.enableIgnore;
-                                setState(() {});
-                              },
-                              icon: bugger.enableIgnore
-                                  ? const Icon(Icons.sms_failed)
-                                  : const Icon(Icons.sms_failed_outlined)),
-                          IconButton(
-                            onPressed: () {
-                              if (input.isNotEmpty) {
-                                input = input.substring(0, input.length - 1);
-                                setState(() {});
-                              }
-                            },
-                            icon: const Icon(Icons.backspace_outlined),
+                          child: Column(
+                            children: <Widget>[
+                              Text(
+                                input,
+                                style: const TextStyle(
+                                  fontSize: 30,
+                                  fontWeight: FontWeight.normal,
+                                ),
+                                textAlign: TextAlign.end,
+                              ),
+                              Text(
+                                output,
+                                style: const TextStyle(
+                                  fontSize: 50,
+                                  fontWeight: FontWeight.normal,
+                                ),
+                                textAlign: TextAlign.end,
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                  Positioned(
+                    bottom: 16,
+                    right: 16,
+                    left: 16,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            // Show calculation history
+                            showHistoryDialog(context);
+                          },
+                          icon: const Icon(Icons.history),
+                        ),
+                        IconButton(
+                            onPressed: () {
+                              bugger.enableDelay = !bugger.enableDelay;
+                              setState(() {});
+                            },
+                            icon: bugger.enableDelay ? const Icon(Icons.timer) : const Icon(Icons.timer_off)),
+                        IconButton(
+                            onPressed: () {
+                              bugger.enableIgnore = !bugger.enableIgnore;
+                              setState(() {});
+                            },
+                            icon: bugger.enableIgnore
+                                ? const Icon(Icons.sms_failed)
+                                : const Icon(Icons.sms_failed_outlined)),
+                        IconButton(
+                          onPressed: () {
+                            if (input.isNotEmpty) {
+                              input = input.substring(0, input.length - 1);
+                              setState(() {});
+                            }
+                          },
+                          icon: const Icon(Icons.backspace_outlined),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
-            Padding(
+            Container(
               // Calculator keyboard area
               padding: const EdgeInsets.all(8.0),
+              width: (screenSize.height * 5 / 4),
               child: Wrap(
                 children: [
                   ...ButtonArea1.values.map(
                     (e) => SizedBox(
-                      width: screenSize.width / 4.19,
-                      height: screenSize.width / 4.19,
+                      width: screenSize.height / 4.75,
+                      height: screenSize.height / 4.75,
                       child: buildButton(
                         text: e.text,
                         color: e.color,

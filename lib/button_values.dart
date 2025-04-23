@@ -1,26 +1,26 @@
 import 'package:flutter/material.dart';
 
 enum ButtonArea1 {
-  clr,
-  priority,
-  per,
-  divide,
   n7,
   n8,
   n9,
-  multiply,
+  clr,
+  priority,
   n4,
   n5,
   n6,
+  add,
   subtract,
   n1,
   n2,
   n3,
-  add,
+  multiply,
+  divide,
   dot,
   n0,
   notation,
   calculate,
+  per,
 }
 
 extension Lay1Prop on ButtonArea1 {
