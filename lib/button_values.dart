@@ -23,6 +23,52 @@ enum ButtonArea1 {
   per,
 }
 
+final keyboardButtonsLandscape = [
+  ButtonArea1.n7,
+  ButtonArea1.n8,
+  ButtonArea1.n9,
+  ButtonArea1.clr,
+  ButtonArea1.priority,
+  ButtonArea1.n4,
+  ButtonArea1.n5,
+  ButtonArea1.n6,
+  ButtonArea1.add,
+  ButtonArea1.subtract,
+  ButtonArea1.n1,
+  ButtonArea1.n2,
+  ButtonArea1.n3,
+  ButtonArea1.multiply,
+  ButtonArea1.divide,
+  ButtonArea1.dot,
+  ButtonArea1.n0,
+  ButtonArea1.notation,
+  ButtonArea1.calculate,
+  ButtonArea1.per,
+];
+
+final keyboardButtonsPortrait = [
+  ButtonArea1.clr,
+  ButtonArea1.priority,
+  ButtonArea1.per,
+  ButtonArea1.divide,
+  ButtonArea1.n7,
+  ButtonArea1.n8,
+  ButtonArea1.n9,
+  ButtonArea1.multiply,
+  ButtonArea1.n4,
+  ButtonArea1.n5,
+  ButtonArea1.n6,
+  ButtonArea1.subtract,
+  ButtonArea1.n1,
+  ButtonArea1.n2,
+  ButtonArea1.n3,
+  ButtonArea1.add,
+  ButtonArea1.dot,
+  ButtonArea1.n0,
+  ButtonArea1.notation,
+  ButtonArea1.calculate,
+];
+
 extension Lay1Prop on ButtonArea1 {
   Color get color {
     switch (this) {

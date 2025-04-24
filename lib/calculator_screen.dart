@@ -192,23 +192,23 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
     return count == 0; // Parentheses are balanced if count is zero
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final screenSize = MediaQuery.of(context).size;
-    return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: SafeArea(
-        bottom: false,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  Widget buildDisplay() => SingleChildScrollView(
+        reverse: true,
+        child: Stack(
           children: [
-            SingleChildScrollView(
-              reverse: true,
-              child: Stack(
-                children: [
+            Container(
+              width: 350,
+              height: 270,
+              alignment: Alignment.bottomRight,
+              padding: const EdgeInsets.all(8.0),
+              margin: const EdgeInsets.all(8.0),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: const Color(0XFFF4EAE0),
+              ),
+              child: Column(
+                children: <Widget>[
                   Container(
-                    width: 350,
-                    height: 270,
                     alignment: Alignment.bottomRight,
                     padding: const EdgeInsets.all(8.0),
                     margin: const EdgeInsets.all(8.0),
@@ -218,74 +218,21 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                     ),
                     child: Column(
                       children: <Widget>[
-                        Container(
-                          alignment: Alignment.bottomRight,
-                          padding: const EdgeInsets.all(8.0),
-                          margin: const EdgeInsets.all(8.0),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: const Color(0XFFF4EAE0),
+                        Text(
+                          input,
+                          style: const TextStyle(
+                            fontSize: 30,
+                            fontWeight: FontWeight.normal,
                           ),
-                          child: Column(
-                            children: <Widget>[
-                              Text(
-                                input,
-                                style: const TextStyle(
-                                  fontSize: 30,
-                                  fontWeight: FontWeight.normal,
-                                ),
-                                textAlign: TextAlign.end,
-                              ),
-                              Text(
-                                output,
-                                style: const TextStyle(
-                                  fontSize: 50,
-                                  fontWeight: FontWeight.normal,
-                                ),
-                                textAlign: TextAlign.end,
-                              ),
-                            ],
+                          textAlign: TextAlign.end,
+                        ),
+                        Text(
+                          output,
+                          style: const TextStyle(
+                            fontSize: 50,
+                            fontWeight: FontWeight.normal,
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Positioned(
-                    bottom: 16,
-                    right: 16,
-                    left: 16,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        IconButton(
-                          onPressed: () {
-                            // Show calculation history
-                            showHistoryDialog(context);
-                          },
-                          icon: const Icon(Icons.history),
-                        ),
-                        IconButton(
-                            onPressed: () {
-                              bugger.enableDelay = !bugger.enableDelay;
-                              setState(() {});
-                            },
-                            icon: bugger.enableDelay ? const Icon(Icons.timer) : const Icon(Icons.timer_off)),
-                        IconButton(
-                            onPressed: () {
-                              bugger.enableIgnore = !bugger.enableIgnore;
-                              setState(() {});
-                            },
-                            icon: bugger.enableIgnore
-                                ? const Icon(Icons.sms_failed)
-                                : const Icon(Icons.sms_failed_outlined)),
-                        IconButton(
-                          onPressed: () {
-                            if (input.isNotEmpty) {
-                              input = input.substring(0, input.length - 1);
-                              setState(() {});
-                            }
-                          },
-                          icon: const Icon(Icons.backspace_outlined),
+                          textAlign: TextAlign.end,
                         ),
                       ],
                     ),
@@ -293,28 +240,107 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                 ],
               ),
             ),
-            Container(
-              // Calculator keyboard area
-              padding: const EdgeInsets.all(8.0),
-              width: (screenSize.height * 5 / 4),
-              child: Wrap(
+            Positioned(
+              bottom: 16,
+              right: 16,
+              left: 16,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  ...ButtonArea1.values.map(
-                    (e) => SizedBox(
-                      width: screenSize.height / 4.75,
-                      height: screenSize.height / 4.75,
-                      child: buildButton(
-                        text: e.text,
-                        color: e.color,
-                        textColor: e.textColor,
-                      ),
-                    ),
-                  )
+                  IconButton(
+                    onPressed: () {
+                      // Show calculation history
+                      showHistoryDialog(context);
+                    },
+                    icon: const Icon(Icons.history),
+                  ),
+                  IconButton(
+                      onPressed: () {
+                        bugger.enableDelay = !bugger.enableDelay;
+                        setState(() {});
+                      },
+                      icon: bugger.enableDelay ? const Icon(Icons.timer) : const Icon(Icons.timer_off)),
+                  IconButton(
+                      onPressed: () {
+                        bugger.enableIgnore = !bugger.enableIgnore;
+                        setState(() {});
+                      },
+                      icon: bugger.enableIgnore ? const Icon(Icons.sms_failed) : const Icon(Icons.sms_failed_outlined)),
+                  IconButton(
+                    onPressed: () {
+                      if (input.isNotEmpty) {
+                        input = input.substring(0, input.length - 1);
+                        setState(() {});
+                      }
+                    },
+                    icon: const Icon(Icons.backspace_outlined),
+                  ),
                 ],
               ),
             ),
           ],
         ),
+      );
+
+  Widget buildKeyboard(Size screenSize, bool isPortraitMode) {
+    List<ButtonArea1> buttonsOrder;
+    double scaleFactor;
+    if (isPortraitMode) {
+      buttonsOrder = keyboardButtonsPortrait;
+      scaleFactor = screenSize.width / 4.19;
+    } else {
+      buttonsOrder = keyboardButtonsLandscape;
+      scaleFactor = screenSize.height / 4.75;
+    }
+    Widget buildButtonBox(ButtonArea1 e) => SizedBox(
+          width: scaleFactor,
+          height: scaleFactor,
+          child: buildButton(
+            text: e.text,
+            color: e.color,
+            textColor: e.textColor,
+          ),
+        );
+    return isPortraitMode
+        ? Padding(
+            // Calculator keyboard area
+            padding: const EdgeInsets.all(8.0),
+            child: Wrap(
+              children: [...buttonsOrder.map(buildButtonBox)],
+            ),
+          )
+        : Container(
+            // Calculator keyboard area
+            padding: const EdgeInsets.all(8.0),
+            width: screenSize.height * 5 / 4,
+            child: Wrap(
+              children: [...buttonsOrder.map(buildButtonBox)],
+            ),
+          );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
+    final isPortraitMode = MediaQuery.orientationOf(context) == Orientation.portrait;
+    return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      body: SafeArea(
+        bottom: false,
+        child: isPortraitMode
+            ? Column(
+                children: [
+                  Expanded(child: buildDisplay()),
+                  buildKeyboard(screenSize, isPortraitMode),
+                ],
+              )
+            : Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  buildDisplay(),
+                  buildKeyboard(screenSize, isPortraitMode),
+                ],
+              ),
       ),
     );
   }
