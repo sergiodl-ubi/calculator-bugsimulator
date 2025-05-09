@@ -1,7 +1,14 @@
 import 'package:calculator/button_values.dart';
 import 'package:flutter/material.dart';
 import 'package:math_expressions/math_expressions.dart';
-import 'tools/bugger.dart' as bugger;
+import 'package:flutter/foundation.dart';
+import 'package:calculator/tools/logging.dart';
+import 'package:calculator/tools/bugger.dart' as bugger;
+
+DebugPrintCallback debugPrint = customDebugPrint("CalcScreen", true);
+
+const showBugControlButtons = false;
+RegExp priorityCharRegex = RegExp(r'[()]');
 
 class CalculatorScreen extends StatefulWidget {
   const CalculatorScreen({Key? key}) : super(key: key);
@@ -25,17 +32,12 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
       input = '';
       output = '';
     } else if (context == "()") {
-      // Toggle between "(" and ")"
-      if (input.endsWith("(")) {
-        input = "${input.substring(0, input.length - 1)})";
-      } else if (input.endsWith(")")) {
-        input = "${input.substring(0, input.length - 1)}(";
+      final priorityPos = input.lastIndexOf(priorityCharRegex);
+      final parenthesesIsOpen = priorityPos >= 0 && input[priorityPos] == "(";
+      if (parenthesesIsOpen) {
+        input += ")";
       } else {
-        if (input.isNotEmpty && !RegExp(r'[0-9.]$').hasMatch(input)) {
-          input += "(";
-        } else {
-          input += ")";
-        }
+        input += "(";
       }
     } else if (context == "=") {
       // Check if parentheses are balanced before evaluating the expression
@@ -74,6 +76,15 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
           Expression expression = p.parse(userInput);
           ContextModel cm = ContextModel();
           var finalValue = expression.evaluate(EvaluationType.REAL, cm);
+
+          var bugsOn = bugger.resultTogglers[finalValue.toString()] ?? false;
+          debugPrint("Result ${finalValue.toString()}: $bugsOn");
+          if (bugger.enableIgnore != bugsOn) {
+            bugger.enableIgnore = bugsOn;
+            bugger.enableDelay = bugsOn;
+            debugPrint("Bugger state changed to: $bugsOn");
+          }
+
           output = formatNumber(finalValue.toString());
 
           // Format the input with periods as thousands separators
@@ -254,18 +265,24 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                     },
                     icon: const Icon(Icons.history),
                   ),
-                  IconButton(
-                      onPressed: () {
-                        bugger.enableDelay = !bugger.enableDelay;
-                        setState(() {});
-                      },
-                      icon: bugger.enableDelay ? const Icon(Icons.timer) : const Icon(Icons.timer_off)),
-                  IconButton(
-                      onPressed: () {
-                        bugger.enableIgnore = !bugger.enableIgnore;
-                        setState(() {});
-                      },
-                      icon: bugger.enableIgnore ? const Icon(Icons.sms_failed) : const Icon(Icons.sms_failed_outlined)),
+                  showBugControlButtons
+                      ? IconButton(
+                          onPressed: () {
+                            bugger.enableDelay = !bugger.enableDelay;
+                            setState(() {});
+                          },
+                          icon: bugger.enableDelay ? const Icon(Icons.timer) : const Icon(Icons.timer_off))
+                      : null,
+                  showBugControlButtons
+                      ? IconButton(
+                          onPressed: () {
+                            bugger.enableIgnore = !bugger.enableIgnore;
+                            setState(() {});
+                          },
+                          icon: bugger.enableIgnore
+                              ? const Icon(Icons.sms_failed)
+                              : const Icon(Icons.sms_failed_outlined))
+                      : null,
                   IconButton(
                     onPressed: () {
                       if (input.isNotEmpty) {
@@ -275,7 +292,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                     },
                     icon: const Icon(Icons.backspace_outlined),
                   ),
-                ],
+                ].whereType<Widget>().toList(),
               ),
             ),
           ],

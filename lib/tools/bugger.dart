@@ -4,8 +4,8 @@ import 'package:calculator/tools/logging.dart';
 
 DebugPrintCallback debugPrint = customDebugPrint("Bugger", true);
 
-bool enableDelay = true;
-bool enableIgnore = true;
+bool enableDelay = false;
+bool enableIgnore = false;
 
 const delayMin = 0.0;
 const delayMax = 2.5;
@@ -94,3 +94,37 @@ Future<bool> randomBug() async {
   }
   return false;
 }
+
+/// key: The expected output of an operation, value: whether if next operation has bugs turned on
+const resultTogglers = {
+  "97.0": false, // From here: UX with normal operation
+  "6.5": false,
+  "165.0": false,
+  "43.0": false,
+  "3.0": false,
+  "41.0": false,
+  "-135.0": false,
+  "47.75": false,
+  "140.0": false,
+  "12.3": false,
+  "1.0": false,
+  "125.5": false,
+  "40.25": false,
+  "142.0": false,
+  "20.0": false,
+  "5.75": false, // From here: stressful UX operation's results, may be errors
+  "424.0": false,
+  "130.0": true,
+  "-148.0": true,
+  "31.4": true,
+  "55.0": false,
+  "66.0": false,
+  "-5.0": true,
+  "-738.0": true,
+  "90.0": false,
+  "43.75": false,
+  "22.0": false,
+  "122.0": true,
+  "218.0": true,
+  "71.0": false,
+};
