@@ -21,6 +21,9 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   String input = '';
   String output = '';
   List<String> calculationHistory = [];
+  final normalFontSize = 32.0;
+  final smallFontSize = 18.0;
+  final smallFontSizeMode = false;
 
   void onButtonClick(String context, BuildContext buildContext) async {
     final ignoreClick = await bugger.randomBug();
@@ -398,10 +401,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
         child: FittedBox(
           child: Text(
             text,
-            style: TextStyle(
-              fontSize: 32,
-              color: textColor,
-            ),
+            style: TextStyle(fontSize: smallFontSizeMode ? smallFontSize : normalFontSize, color: textColor),
           ),
         ),
       ),
