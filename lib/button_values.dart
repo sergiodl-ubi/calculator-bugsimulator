@@ -21,6 +21,7 @@ enum ButtonArea1 {
   notation,
   calculate,
   per,
+  operations,
 }
 
 final keyboardButtonsLandscape = [
@@ -69,6 +70,48 @@ final keyboardButtonsPortrait = [
   ButtonArea1.calculate,
 ];
 
+final keyboardButtonsReduced = [
+  ButtonArea1.n7,
+  ButtonArea1.n8,
+  ButtonArea1.n9,
+  ButtonArea1.clr,
+  ButtonArea1.n4,
+  ButtonArea1.n5,
+  ButtonArea1.n6,
+  ButtonArea1.add,
+  ButtonArea1.n1,
+  ButtonArea1.n2,
+  ButtonArea1.n3,
+  ButtonArea1.subtract,
+  ButtonArea1.dot,
+  ButtonArea1.n0,
+  ButtonArea1.calculate,
+  ButtonArea1.operations,
+];
+
+final keyboardButtonsExtended = [
+  ButtonArea1.n7,
+  ButtonArea1.n8,
+  ButtonArea1.n9,
+  ButtonArea1.clr,
+  ButtonArea1.priority,
+  ButtonArea1.n4,
+  ButtonArea1.n5,
+  ButtonArea1.n6,
+  ButtonArea1.add,
+  ButtonArea1.multiply,
+  ButtonArea1.n1,
+  ButtonArea1.n2,
+  ButtonArea1.n3,
+  ButtonArea1.subtract,
+  ButtonArea1.divide,
+  ButtonArea1.dot,
+  ButtonArea1.n0,
+  ButtonArea1.calculate,
+  ButtonArea1.operations,
+  ButtonArea1.per,
+];
+
 extension Lay1Prop on ButtonArea1 {
   Color get color {
     switch (this) {
@@ -101,6 +144,8 @@ extension Lay1Prop on ButtonArea1 {
       case ButtonArea1.subtract:
       case ButtonArea1.add:
         return const Color(0XFF000000);
+      case ButtonArea1.operations:
+        return const Color(0XFF3275A8);
       default:
         return const Color(0XFF000000);
     }
@@ -148,6 +193,8 @@ extension Lay1Prop on ButtonArea1 {
         return "8";
       case ButtonArea1.n9:
         return "9";
+      case ButtonArea1.operations:
+        return "Op.";
     }
   }
 }

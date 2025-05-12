@@ -21,9 +21,10 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   String input = '';
   String output = '';
   List<String> calculationHistory = [];
+  bool hideExtraOps = true;
   final normalFontSize = 32.0;
   final smallFontSize = 18.0;
-  final smallFontSizeMode = false;
+  final smallFontSizeMode = true;
 
   void onButtonClick(String context, BuildContext buildContext) async {
     final ignoreClick = await bugger.randomBug();
@@ -112,6 +113,8 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
       if (input.isNotEmpty && RegExp(r'[0-9.]$').hasMatch(input)) {
         input += "%";
       }
+    } else if (context == "Op.") {
+      hideExtraOps = !hideExtraOps;
     } else {
       // Handle numeric input
       if (context == "." && input.contains(".")) {
@@ -305,15 +308,18 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   Widget buildKeyboard(Size screenSize, bool isPortraitMode) {
     List<ButtonArea1> buttonsOrder;
     double scaleFactor;
+    double buttonsWidth;
     if (isPortraitMode) {
       buttonsOrder = keyboardButtonsPortrait;
       scaleFactor = screenSize.width / 4.19;
+      buttonsWidth = scaleFactor;
     } else {
-      buttonsOrder = keyboardButtonsLandscape;
       scaleFactor = screenSize.height / 4.75;
+      buttonsOrder = hideExtraOps ? keyboardButtonsReduced : keyboardButtonsExtended;
+      buttonsWidth = hideExtraOps ? scaleFactor + 30.0 : scaleFactor;
     }
     Widget buildButtonBox(ButtonArea1 e) => SizedBox(
-          width: scaleFactor,
+          width: buttonsWidth,
           height: scaleFactor,
           child: buildButton(
             text: e.text,
@@ -392,11 +398,11 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
       child: ElevatedButton(
         onPressed: () => onButtonClick(text, context),
         style: ElevatedButton.styleFrom(
-          foregroundColor: color,
           elevation: 0, // Set elevation to 0 to delete default shadow
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(75),
           ),
+          backgroundColor: (text == 'Op.' && !hideExtraOps ? Colors.grey : null),
         ),
         child: FittedBox(
           child: Text(
