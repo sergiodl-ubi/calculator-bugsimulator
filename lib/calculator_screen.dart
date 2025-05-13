@@ -50,14 +50,21 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
           var userInput = input;
 
           // Handle percentage operation first
-          userInput = userInput.replaceAllMapped(
-            RegExp(r'(\d+(?:\.\d+)?)\s*%\s*(\+|\-|\*|\/|$)'),
-            (match) {
-              var value = double.parse(match.group(1)!);
-              var operator = match.group(2) ?? '';
-              return (value / 100).toString() + operator;
-            },
-          );
+          if (userInput.contains("%")) {
+            userInput = userInput.replaceAllMapped(
+              RegExp(r'(\d+(?:\.\d+)?)?\s*(\+|\-|\*|\/|$)?\s*(\d+(?:\.\d+)?)\s*%'),
+              (match) {
+                debugPrint("${match.group(1)}, ${match.group(2)}, ${match.group(3)}");
+                double? preValue = double.tryParse(match.group(1) ?? '');
+                var operator = match.group(2) ?? '';
+                var value = double.parse(match.group(3)!) / 100;
+                if (preValue != null) {
+                  value = preValue * value;
+                }
+                return (preValue?.toString() ?? '') + operator + value.toString();
+              },
+            );
+          }
 
           // Updated logic for handling negative numbers
           userInput = userInput.replaceAllMapped(
@@ -96,8 +103,10 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
 
           // Add the expression to the calculation history
           calculationHistory.add("$input = $output");
+          hideExtraOps = true;
         } catch (e) {
           // Handle parsing or evaluation errors
+          debugPrint(e.toString());
           output = 'Error';
           input = '';
         }
@@ -186,7 +195,9 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
     var formattedNumber = numberString.replaceAll('/', '÷').replaceAll('*', '×');
 
     // Check if the number is an integer
-    if (formattedNumber.contains('.') && double.tryParse(formattedNumber)! % 1 == 0) {
+    if (formattedNumber.contains('.') &&
+        double.tryParse(formattedNumber) != null &&
+        double.tryParse(formattedNumber)! % 1 == 0) {
       // Remove decimal part for integers
       formattedNumber = formattedNumber.replaceAll(RegExp(r'\.0$'), '');
     }
