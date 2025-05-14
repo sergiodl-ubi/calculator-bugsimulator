@@ -52,14 +52,16 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
           // Handle percentage operation first
           if (userInput.contains("%")) {
             userInput = userInput.replaceAllMapped(
-              RegExp(r'(\d+(?:\.\d+)?)?\s*(\+|\-|\*|\/|$)?\s*(\d+(?:\.\d+)?)\s*%'),
+              RegExp(r'(?:(\d+(?:\.\d+)?)\s*(\+|\-|÷|×|$))?\s*(\d+(?:\.\d+)?)\s*%'),
               (match) {
-                debugPrint("${match.group(1)}, ${match.group(2)}, ${match.group(3)}");
                 double? preValue = double.tryParse(match.group(1) ?? '');
-                var operator = match.group(2) ?? '';
+                final operator = match.group(2) ?? '';
                 var value = double.parse(match.group(3)!) / 100;
                 if (preValue != null) {
                   value = preValue * value;
+                  if ((value - value.truncate()).toString().length > 5) {
+                    value = double.parse(value.toString().substring(0, 5));
+                  }
                 }
                 return (preValue?.toString() ?? '') + operator + value.toString();
               },
@@ -154,9 +156,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
     setState(() {});
   }
 
-  int getDigitCount(String input) {
-    return input.replaceAll(RegExp(r'[^0-9]'), '').length;
-  }
+  int getDigitCount(String input) => input.replaceAll(RegExp(r'[^0-9]'), '').length;
 
   void showDigitLimitExceededDialog(BuildContext context) {
     showDialog(
