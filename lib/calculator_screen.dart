@@ -32,6 +32,12 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
       return;
     }
 
+    // Clear up screen after calculation has finished and another button has been pressed
+    if (context.isNotEmpty && output.isNotEmpty && context != "=") {
+      input = '';
+      output = '';
+    }
+
     if (context == "C") {
       input = '';
       output = '';
@@ -81,7 +87,10 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
           // Check if the input exceeds 15 digits
           if (getDigitCount(userInput) > 15) {
             // Display a pop-up notifying the user
-            showDigitLimitExceededDialog(buildContext);
+            if (buildContext.mounted) {
+              showDigitLimitExceededDialog(buildContext);
+            }
+            debugPrint("Digit Limit Exceeded in userInput: $userInput");
             return;
           }
 
@@ -90,17 +99,20 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
           ContextModel cm = ContextModel();
           var finalValue = expression.evaluate(EvaluationType.REAL, cm);
 
-          var bugsOn = bugger.resultTogglers[finalValue.toString()] ?? false;
-          debugPrint("Result ${finalValue.toString()}: $bugsOn");
-          if (bugger.enableIgnore != bugsOn) {
+          String result = finalValue.toStringAsFixed(2);
+          if (result.contains(".")) {
+            result = double.parse(result).toString();
+          }
+
+          var bugsOn = bugger.resultTogglers[result];
+          debugPrint("Result $result: $bugsOn");
+          if (bugsOn != null && bugger.enableIgnore != bugsOn) {
             bugger.enableIgnore = bugsOn;
             bugger.enableDelay = bugsOn;
             debugPrint("Bugger state changed to: $bugsOn");
           }
 
-          output = formatNumber(finalValue.toString());
-
-          // Format the input with periods as thousands separators
+          output = formatNumber(result);
           input = formatNumber(userInput);
 
           // Add the expression to the calculation history
@@ -127,10 +139,18 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
     } else if (context == "Op.") {
       hideExtraOps = !hideExtraOps;
     } else {
-      // Handle numeric input
-      if (context == "." && input.contains(".")) {
-        // Prevent entering multiple decimal points
-        return;
+      // Handle decimal point input
+      if (context == ".") {
+        if (RegExp(r'\.\s*$').hasMatch(input) || RegExp(r'\.\d+\s*$').hasMatch(input)) {
+          // Ignore new decimal point if:
+          // a) the last input was a point, e.g. prev input = "9."
+          // b) the last input was decimal part of number, e.g. prev input = "9.01"
+          return;
+        } else if (input.trim().isEmpty) {
+          input = '0';
+        } else if (RegExp(r'.*[^\s\d]+$').hasMatch(input)) {
+          input += '0';
+        }
       }
 
       if (context == "÷") {
@@ -145,7 +165,10 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
         // Check if adding the new character will exceed 15 digits
         if (getDigitCount(input + context) > 15) {
           // Display a pop-up notifying the user
-          showDigitLimitExceededDialog(buildContext);
+          if (buildContext.mounted) {
+            showDigitLimitExceededDialog(buildContext);
+          }
+          debugPrint("Digit Limit Exceeded in displayed input: $input");
           return;
         }
 

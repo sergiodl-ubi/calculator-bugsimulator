@@ -7,9 +7,12 @@ DebugPrintCallback debugPrint = customDebugPrint("Bugger", true);
 bool enableDelay = false;
 bool enableIgnore = false;
 
+// const delayMin = 0.0;
+// const delayMax = 2.5;
+// const normMean = 1.0;
 const delayMin = 0.0;
-const delayMax = 2.5;
-const normMean = 1.0;
+const delayMax = 1.4;
+const normMean = 0.6;
 
 // The delay returned is a number from a normal distribution with [normMean] as mean and [normSigma] as standard dev
 // This standard deviation is to get a 15% of chance to get a delay of 0 seconds
@@ -21,7 +24,10 @@ const normMean = 1.0;
 // targetChanceAtZero = 0.15
 // normSigma = (0 - normMean) / norm.ppf(targetChanceAtZero)
 // ```
-const normSigma = 1.048036;
+
+// const normSigma = 1.048036;
+// 15% change of getting a delay of 0
+const normSigma = 0.48242367;
 NormalRandom normalRandom = NormalRandom(mean: normMean, stdDev: normSigma);
 
 class NormalRandom {
@@ -67,7 +73,8 @@ Future<void> randomDelay() async {
   await Future.delayed(randDuration);
 }
 
-const boolDistribution = [1, 1, 1, 1, 0, 0, 0, 0, 0, 0]; // 40% of the time, is true
+// 15% of the time, is true
+const boolDistribution = [1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 bool randomIgnore() {
   if (!enableIgnore) {
     return false;
@@ -117,9 +124,9 @@ const resultTogglers = {
   "130.0": true,
   "-148.0": true,
   "31.4": true,
-  "55.0": false,
+  "96.4": false,
   "66.0": false,
-  "-5.0": true,
+  "-1.0": true,
   "-738.0": true,
   "90.0": false,
   "43.75": false,
