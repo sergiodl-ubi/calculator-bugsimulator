@@ -194,7 +194,7 @@ extension Lay1Prop on ButtonArea1 {
       case ButtonArea1.n9:
         return "9";
       case ButtonArea1.operations:
-        return "Op.";
+        return "Fn";
     }
   }
 }

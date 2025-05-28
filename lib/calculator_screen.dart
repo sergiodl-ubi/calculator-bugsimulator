@@ -24,7 +24,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   bool hideExtraOps = true;
   final normalFontSize = 32.0;
   final smallFontSize = 18.0;
-  final smallFontSizeMode = true;
+  final smallFontSizeMode = bugger.enableBadUI;
 
   void onButtonClick(String context, BuildContext buildContext) async {
     final ignoreClick = await bugger.randomBug();
@@ -136,7 +136,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
       if (input.isNotEmpty && RegExp(r'[0-9.]$').hasMatch(input)) {
         input += "%";
       }
-    } else if (context == "Op.") {
+    } else if (context == ButtonArea1.operations.text) {
       hideExtraOps = !hideExtraOps;
     } else {
       // Handle decimal point input
@@ -349,8 +349,13 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
       buttonsWidth = scaleFactor;
     } else {
       scaleFactor = screenSize.height / 4.75;
-      buttonsOrder = hideExtraOps ? keyboardButtonsReduced : keyboardButtonsExtended;
-      buttonsWidth = hideExtraOps ? scaleFactor + 30.0 : scaleFactor;
+      if (bugger.enableBadUI) {
+        buttonsOrder = hideExtraOps ? keyboardButtonsReduced : keyboardButtonsExtended;
+        buttonsWidth = hideExtraOps ? scaleFactor + 30.0 : scaleFactor;
+      } else {
+        buttonsOrder = keyboardButtonsLandscape;
+        buttonsWidth = scaleFactor;
+      }
     }
     Widget buildButtonBox(ButtonArea1 e) => SizedBox(
           width: buttonsWidth,
@@ -436,7 +441,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(75),
           ),
-          backgroundColor: (text == 'Op.' && !hideExtraOps ? Colors.grey : null),
+          backgroundColor: (text == ButtonArea1.operations.text && !hideExtraOps ? Colors.grey : null),
         ),
         child: FittedBox(
           child: Text(

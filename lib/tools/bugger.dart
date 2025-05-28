@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:calculator/tools/logging.dart';
 
 DebugPrintCallback debugPrint = customDebugPrint("Bugger", true);
+bool enableBadUI = true;
 
 bool enableDelay = false;
 bool enableIgnore = false;
