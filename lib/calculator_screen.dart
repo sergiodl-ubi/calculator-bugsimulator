@@ -24,7 +24,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   List<String> calculationHistory = [];
   bool hideExtraOps = true;
   final normalFontSize = 32.0;
-  final smallFontSize = 18.0;
+  final smallFontSize = 8.0;
   var smallFontSizeMode = bugger.enableBadUI;
 
   void enableBadUI(bool enable) {
@@ -369,8 +369,8 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
 
   Widget buildKeyboard(Size screenSize, bool isPortraitMode) {
     List<ButtonArea1> buttonsOrder;
-    double scaleFactor;
-    double buttonsWidth;
+    double scaleFactor, buttonsWidth;
+    double rightPadding = 8.0;
     if (isPortraitMode) {
       buttonsOrder = keyboardButtonsPortrait;
       scaleFactor = screenSize.width / 4.19;
@@ -379,11 +379,11 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
       scaleFactor = screenSize.height / 4.75;
       if (bugger.enableBadUI) {
         buttonsOrder = hideExtraOps ? keyboardButtonsReduced : keyboardButtonsExtended;
-        buttonsWidth = hideExtraOps ? scaleFactor + 30.0 : scaleFactor;
+        rightPadding = hideExtraOps ? 40.0 : 8.0;
       } else {
         buttonsOrder = keyboardButtonsLandscape;
-        buttonsWidth = scaleFactor;
       }
+      buttonsWidth = scaleFactor;
     }
     Widget buildButtonBox(ButtonArea1 e) => SizedBox(
           width: buttonsWidth,
@@ -404,7 +404,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
           )
         : Container(
             // Calculator keyboard area
-            padding: const EdgeInsets.all(8.0),
+            padding: EdgeInsets.only(top: 8.0, bottom: 8.0, left: 8.0, right: rightPadding),
             width: screenSize.height * 5 / 4,
             child: Wrap(
               children: [...buttonsOrder.map(buildButtonBox)],
@@ -431,7 +431,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   buildDisplay(),
-                  buildKeyboard(screenSize, isPortraitMode),
+                  Expanded(child: buildKeyboard(screenSize, isPortraitMode)),
                 ],
               ),
       ),
@@ -474,7 +474,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
         child: FittedBox(
           child: Text(text,
               style: TextStyle(
-                fontSize: smallFontSizeMode ? null : normalFontSize,
+                fontSize: smallFontSizeMode ? smallFontSize : normalFontSize,
                 color: textColor,
               )),
         ),
