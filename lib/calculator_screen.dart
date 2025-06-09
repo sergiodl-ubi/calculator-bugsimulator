@@ -4,6 +4,7 @@ import 'package:math_expressions/math_expressions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:calculator/tools/logging.dart';
 import 'package:calculator/tools/bugger.dart' as bugger;
+import 'dart:ui';
 
 DebugPrintCallback debugPrint = customDebugPrint("CalcScreen", true);
 
@@ -24,7 +25,12 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   bool hideExtraOps = true;
   final normalFontSize = 32.0;
   final smallFontSize = 18.0;
-  final smallFontSizeMode = bugger.enableBadUI;
+  var smallFontSizeMode = bugger.enableBadUI;
+
+  void enableBadUI(bool enable) {
+    bugger.enableBadUI = enable;
+    smallFontSizeMode = bugger.enableBadUI;
+  }
 
   void onButtonClick(String context, BuildContext buildContext) async {
     final ignoreClick = await bugger.randomBug();
@@ -36,13 +42,24 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
     if (context.isNotEmpty && output.isNotEmpty && context != "=") {
       if (input == "333331") {
         bugger.setSeverityParameters(bugger.Severity.light);
+        debugPrint("Set to bug severity Light");
         output = 'Light';
       } else if (input == "333332") {
         bugger.setSeverityParameters(bugger.Severity.normal);
+        debugPrint("Set to bug severity Normal");
         output = 'Normal';
       } else if (input == "333333") {
         bugger.setSeverityParameters(bugger.Severity.high);
+        debugPrint("Set to bug severity High");
         output = 'High';
+      } else if (input == "111110") {
+        enableBadUI(false);
+        debugPrint("Disable BadUI");
+        output = '';
+      } else if (input == "111111") {
+        enableBadUI(true);
+        debugPrint("Enable BadUI");
+        output = '';
       } else {
         output = '';
       }
@@ -455,10 +472,11 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
           backgroundColor: (text == ButtonArea1.operations.text && !hideExtraOps ? Colors.grey : null),
         ),
         child: FittedBox(
-          child: Text(
-            text,
-            style: TextStyle(fontSize: smallFontSizeMode ? smallFontSize : normalFontSize, color: textColor),
-          ),
+          child: Text(text,
+              style: TextStyle(
+                fontSize: smallFontSizeMode ? null : normalFontSize,
+                color: textColor,
+              )),
         ),
       ),
     );

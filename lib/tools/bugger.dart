@@ -8,12 +8,9 @@ bool enableDelay = false;
 bool enableIgnore = false;
 
 enum Severity {
-  light(0.4, 0.48242367, delayMax: 1.0),
+  light(0.3, 0.35645488, delayMax: 1.0),
   normal(0.6, 0.48242367),
-  high(0.8, 0.48242367,
-      delayMin: 0.1,
-      delayMax: 1.6,
-      boolDistribution: [1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+  high(0.8, 0.7336255, delayMax: 1.7, boolDistribution: [1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
 
   final double delayMin;
   final double delayMax;
@@ -21,21 +18,13 @@ enum Severity {
   final double normMean;
   final List<int> boolDistribution;
   const Severity(
-      this.normMean,
-      this.normSigma,
-      {
-        this.delayMin = 0.0,
-        this.delayMax = 1.4,
-        this.boolDistribution = const [1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      });
+    this.normMean,
+    this.normSigma, {
+    this.delayMin = 0.0,
+    this.delayMax = 1.4,
+    this.boolDistribution = const [1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  });
 }
-
-// 15% of the time, is true
-var currentBiasedCoinFlip = Severity.normal.boolDistribution;
-
-var delayMin = Severity.normal.delayMin;
-var delayMax = Severity.normal.delayMax;
-var normMean = Severity.normal.normMean;
 
 // The delay returned is a number from a normal distribution with [normMean] as mean and [normSigma] as standard dev
 // This standard deviation is to get a 15% of chance to get a delay of 0 seconds
@@ -43,15 +32,20 @@ var normMean = Severity.normal.normMean;
 // These values were calculated as follows:
 // ```python
 // from scipy.stats import norm
-// normMean = 0.6
+// normMean = 0.5
 // targetChanceAtZero = 0.15
 // normSigma = (0 - normMean) / norm.ppf(targetChanceAtZero)
 // ```
 
-// var normSigma = 1.048036;
 // 15% change of getting a delay of 0
 var normSigma = Severity.normal.normSigma;
+var normMean = Severity.normal.normMean;
+var delayMin = Severity.normal.delayMin;
+var delayMax = Severity.normal.delayMax;
 NormalRandom normalRandom = NormalRandom(mean: normMean, stdDev: normSigma);
+
+// 15% of the time, is true
+var currentBiasedCoinFlip = Severity.normal.boolDistribution;
 
 void setSeverityParameters(Severity severity) {
   currentBiasedCoinFlip = severity.boolDistribution;
