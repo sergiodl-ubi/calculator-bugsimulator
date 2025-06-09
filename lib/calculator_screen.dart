@@ -34,8 +34,19 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
 
     // Clear up screen after calculation has finished and another button has been pressed
     if (context.isNotEmpty && output.isNotEmpty && context != "=") {
+      if (input == "333331") {
+        bugger.setSeverityParameters(bugger.Severity.light);
+        output = 'Light';
+      } else if (input == "333332") {
+        bugger.setSeverityParameters(bugger.Severity.normal);
+        output = 'Normal';
+      } else if (input == "333333") {
+        bugger.setSeverityParameters(bugger.Severity.high);
+        output = 'High';
+      } else {
+        output = '';
+      }
       input = '';
-      output = '';
     }
 
     if (context == "C") {

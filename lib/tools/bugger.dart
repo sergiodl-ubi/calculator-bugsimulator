@@ -4,16 +4,38 @@ import 'package:calculator/tools/logging.dart';
 
 DebugPrintCallback debugPrint = customDebugPrint("Bugger", true);
 bool enableBadUI = true;
-
 bool enableDelay = false;
 bool enableIgnore = false;
 
-// const delayMin = 0.0;
-// const delayMax = 2.5;
-// const normMean = 1.0;
-const delayMin = 0.0;
-const delayMax = 1.4;
-const normMean = 0.6;
+enum Severity {
+  light(0.4, 0.48242367, delayMax: 1.0),
+  normal(0.6, 0.48242367),
+  high(0.8, 0.48242367,
+      delayMin: 0.1,
+      delayMax: 1.6,
+      boolDistribution: [1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+
+  final double delayMin;
+  final double delayMax;
+  final double normSigma;
+  final double normMean;
+  final List<int> boolDistribution;
+  const Severity(
+      this.normMean,
+      this.normSigma,
+      {
+        this.delayMin = 0.0,
+        this.delayMax = 1.4,
+        this.boolDistribution = const [1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      });
+}
+
+// 15% of the time, is true
+var currentBiasedCoinFlip = Severity.normal.boolDistribution;
+
+var delayMin = Severity.normal.delayMin;
+var delayMax = Severity.normal.delayMax;
+var normMean = Severity.normal.normMean;
 
 // The delay returned is a number from a normal distribution with [normMean] as mean and [normSigma] as standard dev
 // This standard deviation is to get a 15% of chance to get a delay of 0 seconds
@@ -21,15 +43,24 @@ const normMean = 0.6;
 // These values were calculated as follows:
 // ```python
 // from scipy.stats import norm
-// normMean = 1.0
+// normMean = 0.6
 // targetChanceAtZero = 0.15
 // normSigma = (0 - normMean) / norm.ppf(targetChanceAtZero)
 // ```
 
-// const normSigma = 1.048036;
+// var normSigma = 1.048036;
 // 15% change of getting a delay of 0
-const normSigma = 0.48242367;
+var normSigma = Severity.normal.normSigma;
 NormalRandom normalRandom = NormalRandom(mean: normMean, stdDev: normSigma);
+
+void setSeverityParameters(Severity severity) {
+  currentBiasedCoinFlip = severity.boolDistribution;
+  delayMin = severity.delayMin;
+  delayMax = severity.delayMax;
+  normMean = severity.normMean;
+  normSigma = severity.normSigma;
+  normalRandom = NormalRandom(mean: normMean, stdDev: normSigma);
+}
 
 class NormalRandom {
   final double mean;
@@ -74,13 +105,11 @@ Future<void> randomDelay() async {
   await Future.delayed(randDuration);
 }
 
-// 15% of the time, is true
-const boolDistribution = [1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 bool randomIgnore() {
   if (!enableIgnore) {
     return false;
   }
-  final ignore = boolDistribution[Random().nextInt(boolDistribution.length)] == 1;
+  final ignore = currentBiasedCoinFlip[Random().nextInt(currentBiasedCoinFlip.length)] == 1;
   debugPrint("Should ignore button press? $ignore");
   return ignore;
 }
