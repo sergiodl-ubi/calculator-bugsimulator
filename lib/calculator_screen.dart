@@ -83,22 +83,11 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
         try {
           var userInput = input;
 
-          // Handle percentage operation first
+          // Replace N% numbers with their N/100 equivalents
           if (userInput.contains("%")) {
             userInput = userInput.replaceAllMapped(
-              RegExp(r'(?:(\d+(?:\.\d+)?)\s*(\+|\-|÷|×|$))?\s*(\d+(?:\.\d+)?)\s*%'),
-              (match) {
-                double? preValue = double.tryParse(match.group(1) ?? '');
-                final operator = match.group(2) ?? '';
-                var value = double.parse(match.group(3)!) / 100;
-                if (preValue != null) {
-                  value = preValue * value;
-                  if ((value - value.truncate()).toString().length > 5) {
-                    value = double.parse(value.toString().substring(0, 5));
-                  }
-                }
-                return (preValue?.toString() ?? '') + operator + value.toString();
-              },
+              RegExp(r'(\d+(?:\.\d+)?)\s*%'),
+              (match) => (double.parse(match.group(1)!) / 100).toString(),
             );
           }
 
